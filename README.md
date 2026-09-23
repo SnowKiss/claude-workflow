@@ -65,7 +65,27 @@ Then the rule that makes it a loop rather than a weekly report:
 Advice that does not survive contact with reality gets deleted. Without that rule, a
 journal becomes a list of good intentions that grows forever and changes nothing.
 
-### 5. Write fewer skills than you think
+### 5. Specify before you build, and review the spec like you review code
+
+The bottleneck has moved. When generating an implementation is cheap, the expensive parts are
+deciding what to build and checking that it was built right. So the specification gets the same
+treatment as the code: one skill to write it, another to review someone else's, a third to turn
+an approved spec into implementation prompts.
+
+| Spec cycle | Code cycle |
+|---|---|
+| `analyse-ticket` — turn a ticket into a spec and per-repo prompts | `implement-ticket` — write it, test-first |
+| `write-spec` — write or revise my own spec | `review-pr` — review someone else's code |
+| `review-spec` — review a colleague's spec | `respond-review` — process feedback on my own |
+
+Both write-spec and review-spec share one rule, inherited from the code side: **every claim in a
+spec is checked against the actual repository**, on remote branches, before it is accepted. A spec
+that says "18 lines" when the repo says 4 is not a detail; it is the whole review.
+
+And `write-spec` never picks the solution on its own. It produces three options grounded in the
+code, with trade-offs and a recommendation, and the human's choice dictates the spec.
+
+### 6. Write fewer skills than you think
 
 I have written far more skills than I use. Two of them carry the overwhelming majority of
 my daily work; several have never fired once. Writing a skill costs an hour. Keeping a dead
@@ -79,12 +99,17 @@ This repository contains the ones that earned their place, not everything I wrot
 
 ```
 skills/
-├── self-audit/         weekly audit of your own Claude usage, with a closed loop
+├── analyse-ticket/     ticket to spec, plus one implementation prompt per repository
+├── write-spec/         write or revise your own technical spec; three grounded options, human decides
 │   ├── SKILL.md
-│   └── extract_usage.py    parses local transcripts into a digest
+│   └── template-spec.md    the fixed structure a spec must follow
+├── review-spec/        review a colleague's spec, every claim checked against the repository
 ├── implement-ticket/   strict TDD: red, green, refactor — no implementation before a failing test
 ├── review-pr/          senior review of someone else's pull request
 ├── respond-review/     process review feedback on your own PR, triaging fix vs. answer
+├── self-audit/         weekly audit of your own Claude usage, with a closed loop
+│   ├── SKILL.md
+│   └── extract_usage.py    parses local transcripts into a digest
 └── postmortem/         blameless incident postmortem, timeline reconstructed from evidence
 
 agents/
@@ -105,10 +130,13 @@ substitute your own before use:
 | `<YOUR_REPO>` | repository name |
 | `<YOUR_EMAIL>` | your account on the code hosting platform |
 | `<YOUR_WORK_ORG>` | string distinguishing work projects from personal ones |
-| `<CLIENT>` / `<PRODUCT>` | client or product names in examples |
+| `<CLIENT>` / `<PRODUCT_A>` / `<PRODUCT_B>` | client or product names in examples |
+| `<API_REPO>`, `<FRONT_REPO>`, `<ADMIN_REPO>`… | the repositories a ticket can touch |
+| `ABC-1234` | ticket key format |
 
-`review-pr` and `respond-review` target **Azure DevOps** (`az repos` CLI). The procedure
-transfers to GitHub or GitLab; the commands do not.
+`review-pr` and `respond-review` target **Azure DevOps** (`az repos` CLI); the spec skills read
+tickets from **Jira** through the browser. The procedures transfer to GitHub, GitLab or Linear;
+the commands do not.
 
 ## Installing
 
